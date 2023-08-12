@@ -15,9 +15,6 @@ PCB的总体网络架构如下：
 
 # 数据集
 
-使用的数据集：[Market-1501](<http://zheng-lab.cecs.anu.edu.au/Project/project_reid.html>)
-[下载地址](https://pan.baidu.com/s/1qWEcLFQ?_at_=1640837580475)
-
 使用的数据集：[DukeMTMC-reID](http://vision.cs.duke.edu/DukeMTMC/)
 
 - 数据集组成：
@@ -42,8 +39,6 @@ PCB的总体网络架构如下：
  └─query
 ```
 
-- 预训练的Resnet50权重 [下载地址](https://gitee.com/starseekerX/PCB_pretrained_checkpoint/blob/master/pretrained_resnet50.ckpt)
-
 # 环境要求
 
 - 硬件(Ascend)
@@ -61,27 +56,14 @@ PCB的总体网络架构如下：
   ├── README.md
   ├── config                              # 参数配置
     ├── base_config.yaml
-    ├── train_PCB_market.yaml
     ├── train_PCB_duke.yaml
-    ├── train_PCB_cuhk03                  # PCB在CUHK03数据集上训练包含训练与微调两个阶段，因此需要两个配置文件
       ├── train_PCB.yaml
       ├── finetune_PCB.yaml
-    ├── train_RPP_market                  # PCB+RPP在Market-1501数据集上训练需要先训练PCB，然后将PCB权重载入PCB+RPP续训，因此需要两个配置文件
-      ├── train_PCB.yaml
-      ├── train_RPP.yaml
     ├── train_RPP_duke
       ├── train_PCB.yaml
       ├── train_RPP.yaml
-    ├── train_RPP_cuhk03
-      ├── train_PCB.yaml
-      ├── train_RPP.yaml
-      ├── finetune_RPP.yaml
-    ├── eval_PCB_market.yaml              # 评估PCB在Market-1501数据集上的精度
     ├── eval_PCB_duke.yaml
-    ├── eval_PCB_cuhk03.yaml
-    ├── eval_RPP_market.yaml              # 评估PCB+RPP在Market-1501数据集上的精度
     ├── eval_RPP_duke.yaml
-    ├── eval_RPP_cuhk03.yaml
     ├── infer_310_config.yaml             # 用于模型导出成mindir、310推理的配置文件
   ├── scripts
     ├── run_standalone_train.sh           # 启动单卡训练脚本
@@ -175,7 +157,7 @@ gallery_prediction_path: "./gallery_result_files"  #gallery集合310推理结果
 # 单机训练
 # 用法：
 bash run_standalone_train.sh [MODEL_NAME] [DATASET_NAME] [DATASET_PATH] [CONFIG_PATH] [PRETRAINED_CKPT_PATH]（可选）
-# 其中MODEL_NAME可从['PCB', 'RPP']中选择，DATASET_NAME可从['market', 'duke', 'cuhk03']中选择。
+# 其中MODEL_NAME可从['PCB', 'RPP']中选择，DATASET_NAME['duke', ]。
 
 # 请注意数据集与配置文件需与训练脚本对应，请见下面的示例
 
@@ -223,16 +205,11 @@ epoch time: 33965.507 ms, per step time: 131.649 ms
 
 
 ## 评估过程
-
+```bash
 
 # 2、PCB在DukeMTMC-reID上使用G feature评估
 
 bash run_eval.sh PCB duke ../../Datasets/DukeMTMC-reID ../config/eval_PCB_duke.yaml ./output/checkpoint/PCB/duke/train/PCB-60_258.ckpt True
-
-# 3、PCB在CUHK03上使用G feature评估（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
-
-bash run_eval.sh PCB cuhk03 ../../Datasets/CUHK03 ../config/eval_PCB_cuhk03.yaml ./output/checkpoint/PCB/cuhk03/train/PCB_1-45_115.ckpt True
-
 
 # 5、PCB+RPP在DukeMTMC-reID上使用G feature评估（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
 
@@ -254,16 +231,6 @@ CMC Scores        duke
   top-10         94.1%
 ```
 
-- PCB在DukeMTMC-reID数据集使用H feature进行评估
-
-```log
-Mean AP: 68.6%
-CMC Scores        duke
-  top-1          84.2%
-  top-5          91.6%
-  top-10         93.9%
-```
-
 - RPP在DukeMTMC-reID数据集使用G feature进行评估
 
 ```log
@@ -273,20 +240,7 @@ CMC Scores        duke
   top-5          92.6%
   top-10         94.4%
 ```
-
-- RPP在DukeMTMC-reID数据集使用H feature进行评估
-
-```log
-Mean AP: 70.2%
-CMC Scores        duke
-  top-1          85.1%
-  top-5          92.1%
-  top-10         94.0%
-```
-
 ## 推理过程
-
-**推理前需参照 [MindSpore C++推理部署指南](https://gitee.com/mindspore/models/blob/master/utils/cpp_infer/README_CN.md) 进行环境变量设置。**
 
 ### 导出MindIR
 
@@ -306,34 +260,9 @@ python export.py --model_name [MODEL_NAME] --file_name [FILE_NAME] --file_format
 ```shell
 # 示例：
 # 1、导出在Market-1501上训练后使用G feature的PCB模型。
-python export.py --model_name "PCB" --file_name "PCB_market_G" --file_format MINDIR --checkpoint_file_path ../PCB_market.ckpt --use_G_feature True --config_path ./config/infer_310_config.yaml
+python export.py --model_name "PCB" --file_name "PCB_duke_G" --file_format MINDIR --checkpoint_file_path ../PCB_duke.ckpt --use_G_feature True --config_path ./config/infer_310_config.yaml
 ```
 
-ModelArts导出mindir
-
-```text
-# (1) 在网页上设置 "config_path='/path_to_code/config/infer_310_config.yaml'"
-# (2) 把训练好的模型地方到桶的对应位置。
-# (3) 选择a或者b其中一种方式。
-#       a. 设置 "enable_modelarts=True"
-#          设置 "checkpoint_file_path='/cache/load_checkpoint/model.ckpt" 在 yaml 文件。
-#          设置 "checkpoint_url=/The path of checkpoint in S3/" 在 yaml 文件。
-#          设置 "model_name='PCB'" 在 yaml 文件。
-#          设置 "file_name='PCB_market_G'"参数在yaml文件。
-#          设置 "file_format='MINDIR'" 参数在yaml文件。
-#          设置 "use_G_feature=True" 参数在 yaml 文件。
-#       b. 增加 "enable_modelarts=True" 参数在modearts的界面上。
-#          增加 "checkpoint_file_path='/cache/load_checkpoint/model.ckpt'" 参数在modearts的界面上。
-#          增加 "checkpoint_url=/The path of checkpoint in S3/" 参数在modearts的界面上。
-#          设置 "model_name='PCB'"参数在modearts的界面上。
-#          设置 "file_name='PCB_market_G'"参数在modearts的界面上。
-#          设置 "file_format='MINDIR'" 参数在modearts的界面上。
-#          设置 "use_G_feature=True"参数在modearts的界面上。
-# (4) 在modelarts的界面上设置代码的路径 "/path/PCB"。
-# (5) 在modelarts的界面上设置模型的启动文件 "export.py" 。
-# (6) 在modelarts的界面上设置模型的输出路径"Output file path" 和模型的日志路径 "Job log path" 。
-# (7) 开始导出mindir。
-```
 
 ### 在Ascend310执行推理
 
@@ -353,13 +282,12 @@ bash run_infer_310.sh [MINDIR_PATH] [DATASET_NAME] [DATASET_PATH] [USE_G_FEATURE
 ```bash
 # 示例：
 # 1、PCB在Market-1501上使用G feature进行推理。
-bash run_infer_310.sh  ../../mindir/PCB_market_G.mindir market ../../Datasets/Market-1501 True ../config/infer_310_config.yaml
+bash run_infer_310.sh  ../../mindir/PCB_duke_G.mindir market ../../Datasets/DukeMTMC-reID True ../config/infer_310_config.yaml
 ```
 
 ### 结果
 
 推理结果保存在脚本执行的当前路径，你可以在metrics.log中看到以下精度计算结果。
-
 - PCB在DukeMTMC-reID数据集使用G feature进行推理
 
 ```log
@@ -370,15 +298,12 @@ Mean AP: 69.8%
 ```
 
 - PCB在DukeMTMC-reID数据集使用H feature进行推理
-
 ```log
 Mean AP: 68.6%
   top-1          84.2%
   top-5          91.5%
   top-10         93.9%
 ```
-
-
 由于PCB+RPP模型含有AvgPool3D算子，该算子在Ascend310环境暂不支持，因此这一部分未进行推理。
 
 
