@@ -153,7 +153,7 @@ bash run_standalone_train.sh [MODEL_NAME] [DATASET_NAME] [DATASET_PATH] [CONFIG_
 ```
 bash run_standalone_train.sh PCB duke ../../Datasets/DukeMTMC-reID ../config/train_PCB_duke.yaml ../../pretrained_resnet50.ckpt
 ```
-## PCB+RPP在DukeMTMC-reID上训练（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
+## PCB+RPP在DukeMTMC-reID上训练（这里CONFIG_PATH传入配置文件所在目录路径）
 ```
 bash run_standalone_train.sh RPP duke ../../Datasets/DukeMTMC-reID ../config/train_RPP_duke ../../pretrained_resnet50.ckpt
 ```
