@@ -20,15 +20,9 @@ PCB的总体网络架构如下：
 - 数据集组成：
     - 训练集：包含702个行人的16522个RGB图像
     - 测试集：
-
         -query set: 包含702个行人的2228个RGB图像
-
         -gallery set：包含1110个行人的17661个RGB图像
-
-- 数据格式：PNG图像
-    - 注：数据在src/datasets/duke.py中处理。
 - 下载数据集。目录结构如下：
-
 ```text
 ├─ DukeMTMC-reID
  │
