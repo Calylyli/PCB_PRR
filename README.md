@@ -146,42 +146,23 @@ gallery_prediction_path: "./gallery_result_files"  #gallery集合310推理结果
 
 ## 训练过程(Ascend处理器环境运行)
 
-```bash
-# 单机训练
 # 用法：
+```
 bash run_standalone_train.sh [MODEL_NAME] [DATASET_NAME] [DATASET_PATH] [CONFIG_PATH] [PRETRAINED_CKPT_PATH]（可选）
-# 其中MODEL_NAME可从['PCB', 'RPP']中选择，DATASET_NAME['duke', ]。
-
-# 请注意数据集与配置文件需与训练脚本对应，请见下面的示例
-
-# 示例：
+```
+# 其中MODEL_NAME可从['PCB', 'RPP']中选择，DATASET_NAME['duke']。
 
 
 # PCB在DukeMTMC-reID上训练
-
+```
 bash run_standalone_train.sh PCB duke ../../Datasets/DukeMTMC-reID ../config/train_PCB_duke.yaml ../../pretrained_resnet50.ckpt
-
-
+```
 # PCB+RPP在DukeMTMC-reID上训练（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
-
+```
 bash run_standalone_train.sh RPP duke ../../Datasets/DukeMTMC-reID ../config/train_RPP_duke ../../pretrained_resnet50.ckpt
-
-
+```
 训练结果保存在脚本目录的output文件夹下，其中日志文件保存在./output/log/{MODEL_NAME}/{DATASET_NAME}/train下，断点文件保存在./output/checkpoint/{MODEL_NAME}/{DATASET_NAME}/train下，您可以在其中找到所需的信息。
 
-
-- 使用DukeMTMC-reID数据集训练PCB
-
-```log
-# 单卡训练结果
-epoch: 1 step: 258, loss is 23.912783
-epoch time: 100480.371 ms, per step time: 389.459 ms
-epoch: 2 step: 258, loss is 13.815624
-epoch time: 33952.824 ms, per step time: 131.600 ms
-epoch: 3 step: 258, loss is 9.111069
-epoch time: 33952.491 ms, per step time: 131.599 ms
-...
-```
 
 - 使用DukeMTMC-reID数据集训练RPP
 
@@ -200,29 +181,17 @@ epoch time: 33965.507 ms, per step time: 131.649 ms
 ## 评估过程
 ```bash
 
-# 2、PCB在DukeMTMC-reID上使用G feature评估
+# PCB在DukeMTMC-reID上使用G feature评估
 
 bash run_eval.sh PCB duke ../../Datasets/DukeMTMC-reID ../config/eval_PCB_duke.yaml ./output/checkpoint/PCB/duke/train/PCB-60_258.ckpt True
 
-# 5、PCB+RPP在DukeMTMC-reID上使用G feature评估（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
+# PCB+RPP在DukeMTMC-reID上使用G feature评估（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
 
 bash run_eval.sh RPP duke ../../Datasets/DukeMTMC-reID ../config/eval_RPP_duke.yaml ./output/checkpoint/RPP/duke/train/RPP-40_258.ckpt True
 
 评估结果保存在脚本目录的output/log/{MODEL_NAME}/{DATASET_NAME}/eval中。
 
 ### 结果
-
-```
-
-- PCB在DukeMTMC-reID数据集使用G feature进行评估
-
-```log
-Mean AP: 69.8%
-CMC Scores        duke
-  top-1          84.2%
-  top-5          92.4%
-  top-10         94.1%
-```
 
 - RPP在DukeMTMC-reID数据集使用G feature进行评估
 
@@ -290,18 +259,6 @@ Mean AP: 69.8%
   top-10         94.1%
 ```
 
-- PCB在DukeMTMC-reID数据集使用H feature进行推理
-```log
-Mean AP: 68.6%
-  top-1          84.2%
-  top-5          91.5%
-  top-10         93.9%
-```
 由于PCB+RPP模型含有AvgPool3D算子，该算子在Ascend310环境暂不支持，因此这一部分未进行推理。
 
-
 `dataset.py`中设置了“create_dataset”函数内的种子，同时还使用了train.py中的随机种子。
-
-# ModelZoo主页
-
- 请浏览官网[主页](https://gitee.com/mindspore/models)。
