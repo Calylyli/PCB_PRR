@@ -146,7 +146,6 @@ gallery_prediction_path: "./gallery_result_files"  #gallery集合310推理结果
 
 ## 训练过程(Ascend处理器环境运行)
 
-## 用法：
 ```
 bash run_standalone_train.sh [MODEL_NAME] [DATASET_NAME] [DATASET_PATH] [CONFIG_PATH] [PRETRAINED_CKPT_PATH]（可选）
 ```
@@ -204,7 +203,6 @@ CMC Scores        duke
 ```
 ## 推理过程
 
-### 导出MindIR
 
 导出mindir模型
 
