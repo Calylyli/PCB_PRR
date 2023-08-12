@@ -150,7 +150,7 @@ gallery_prediction_path: "./gallery_result_files"  #gallery集合310推理结果
 ```
 bash run_standalone_train.sh [MODEL_NAME] [DATASET_NAME] [DATASET_PATH] [CONFIG_PATH] [PRETRAINED_CKPT_PATH]（可选）
 ```
-
+```log
 ## 其中MODEL_NAME可从['PCB', 'RPP']中选择，DATASET_NAME['duke']。
 
 ## PCB在DukeMTMC-reID上训练
