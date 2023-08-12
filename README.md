@@ -146,18 +146,18 @@ gallery_prediction_path: "./gallery_result_files"  #gallery集合310推理结果
 
 ## 训练过程(Ascend处理器环境运行)
 
-# 用法：
+## 用法：
 ```
 bash run_standalone_train.sh [MODEL_NAME] [DATASET_NAME] [DATASET_PATH] [CONFIG_PATH] [PRETRAINED_CKPT_PATH]（可选）
 ```
-# 其中MODEL_NAME可从['PCB', 'RPP']中选择，DATASET_NAME['duke']。
 
+## 其中MODEL_NAME可从['PCB', 'RPP']中选择，DATASET_NAME['duke']。
 
-# PCB在DukeMTMC-reID上训练
+## PCB在DukeMTMC-reID上训练
 ```
 bash run_standalone_train.sh PCB duke ../../Datasets/DukeMTMC-reID ../config/train_PCB_duke.yaml ../../pretrained_resnet50.ckpt
 ```
-# PCB+RPP在DukeMTMC-reID上训练（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
+## PCB+RPP在DukeMTMC-reID上训练（由于训练涉及多个配置文件，因此在这里CONFIG_PATH传入配置文件所在目录路径即可）
 ```
 bash run_standalone_train.sh RPP duke ../../Datasets/DukeMTMC-reID ../config/train_RPP_duke ../../pretrained_resnet50.ckpt
 ```
